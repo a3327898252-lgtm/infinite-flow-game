@@ -1,0 +1,527 @@
+{
+  "id": "scenario-20250310",
+  "title": "逃离死城",
+  "type": "丧尸末日",
+  "worldview": "2025年东京，T病毒泄露，城市沦陷，幸存者在废墟中求生",
+  "mainQuest": {
+    "id": "quest-001",
+    "title": "逃离死亡都市",
+    "description": "T病毒在72小时内完全占领东京，你必须在病毒扩散到安全区前，带领队友逃离城市。城市已被封锁，唯一的出路是横滨港口的撤离点。",
+    "timeLimit": 72,
+    "conditions": ["抵达横滨港口", "至少存活1名队友"]
+  },
+  "sideQuests": [
+    {
+      "id": "side-001",
+      "title": "拯救幸存者",
+      "description": "在撤离前，尝试寻找并拯救更多幸存者。每拯救1人，获得额外物资包。",
+      "reward": "每救1人获得【领导力】经验+10，额外物资包x1",
+      "hidden": false
+    },
+    {
+      "id": "side-002",
+      "title": "获取解药配方",
+      "description": "寻找T病毒解药的研究数据，这可能拯救整个人类",
+      "hidden": true,
+      "unlockCondition": "在东京大学研究院触发特定对话",
+      "reward": "获得【生化抗性】技能 + 解药配方数据"
+    }
+  ],
+  "characters": [
+    {
+      "id": "player",
+      "name": "你",
+      "type": "player",
+      "skills": []
+    },
+    {
+      "id": "npc-001",
+      "name": "田中上尉",
+      "type": "ally",
+      "role": "特种部队指挥官",
+      "personality": "冷静、果断、多疑",
+      "avatar": "assets/images/scenario-20250310/npc-001.png",
+      "dialogues": [
+        "我们必须行动了，每一秒都至关重要。",
+        "我相信我的判断，跟着我走。",
+        "别轻信任何人，在这个世界，信任会要了你的命。",
+        "我在前线见过太多背叛，所以我总是保持警惕。",
+        "如果是为了任务，我愿意牺牲自己。"
+      ],
+      "deathLine": "看来...这就是我的终点...完成任务...别回头..."
+    },
+    {
+      "id": "npc-002",
+      "name": "美咲",
+      "type": "ally",
+      "role": "急诊科医生",
+      "personality": "温柔、坚定、富有同情心",
+      "avatar": "assets/images/scenario-20250310/npc-002.png",
+      "dialogues": [
+        "无论发生什么，我都不会放弃任何一个病人。",
+        "生命是宝贵的，我们必须保护彼此。",
+        "有受伤的跟我说，我来处理。",
+        "恐惧会吞噬人性，但希望能让我们活下去。",
+        "我也许不是最强的，但我会尽力帮助每一个人。"
+      ],
+      "deathLine": "别...别难过...我的死亡不是没有意义...好好活下去..."
+    },
+    {
+      "id": "npc-003",
+      "name": "老杰克",
+      "type": "ally",
+      "role": "退役老兵",
+      "personality": "粗犷、幽默、经验丰富",
+      "avatar": "assets/images/scenario-20250310/npc-003.png",
+      "dialogues": [
+        "老子什么场面没见过？丧尸？不过是大号虫子罢了。",
+        "嘿，小鬼，跟着我，教你几招保命的把戏。",
+        "别担心，杰克叔叔会罩着你们的。",
+        "我曾经在更糟的地方活下来，这次也没问题。",
+        "死亡不是结束，遗忘才是。所以我们得活着记住这一切。"
+      ],
+      "deathLine": "哈哈...老子这辈子值了...没想到最后还能为了个值得的事业拼命...你们...快走..."
+    }
+  ],
+  "events": [
+    {
+      "id": "event-001",
+      "scene": {
+        "id": "scene-001",
+        "title": "废弃仓库",
+        "description": "你在一间昏暗的仓库醒来，空气中弥漫着腐烂的气味。阳光从破败的窗户射入，照亮了角落里的杂物。远处隐约传来嘶吼声，似乎有危险正在逼近。田中上尉站在门口检查枪支，美咲正在整理医疗包，老杰克正在擦拭一把霰弹枪。",
+        "image": "assets/images/scenario-20250310/scene-001.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：存活倒计时 71:59:59\n当前任务：72小时内抵达横滨港口"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "搜索仓库物资",
+          "action": "search",
+          "nextEvent": "event-002",
+          "deathChance": 0.15,
+          "deathReason": "仓库深处藏有变异丧尸，搜索时突然袭击",
+          "rewards": ["手枪(5发)", "医疗包x1", "压缩饼干x2"],
+          "npcReaction": {
+            "npc-001": "小心点，这里不太安全。",
+            "npc-002": "我们需要更多医疗物资。",
+            "npc-003": "嘿，看看有没有好酒！"
+          },
+          "skillBonus": {
+            "生存术": "发现隐藏的霰弹枪，弹药+10"
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "检查门口情况",
+          "action": "check",
+          "nextEvent": "event-003",
+          "deathChance": 0.05,
+          "deathReason": "门外有感染者埋伏，开门后被咬伤",
+          "rewards": ["发现一份城市地图"],
+          "npcReaction": {
+            "npc-001": "好主意，我们需要知道外面情况。",
+            "npc-002": "小心，别发出声音。",
+            "npc-003": "让我先看看，我有经验。"
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "和队友讨论行动计划",
+          "action": "talk",
+          "nextEvent": "event-004",
+          "deathChance": 0.0,
+          "deathReason": null,
+          "rewards": ["获得队友信任，后续合作更顺利"],
+          "npcReaction": {
+            "npc-001": "时间紧迫，我们需要一个明确的计划。",
+            "npc-002": "我相信我们可以找到安全的路径。",
+            "npc-003": "老子准备好了，随时可以出发！"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-002",
+      "scene": {
+        "id": "scene-002",
+        "title": "街道对峙",
+        "description": "你们走出仓库，街道上到处是废弃的车辆和游荡的感染者。前方有一个小型感染者群，大约5-6只，正在向这边移动。左侧有一条小巷，右侧有一家便利店。",
+        "image": "assets/images/scenario-20250310/scene-002.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：遭遇感染者群"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "正面交战",
+          "action": "attack",
+          "nextEvent": "event-005",
+          "deathChance": 0.4,
+          "deathReason": "感染者数量超过预期，战斗中被围攻",
+          "rewards": ["清理感染者，获得弹药x10"],
+          "npcReaction": {
+            "npc-001": "交战！注意队形！",
+            "npc-002": "小心受伤！",
+            "npc-003": "来吧，让它们尝尝老子的厉害！"
+          },
+          "skillBonus": {
+            "射击精通": "命中率+30%，降低死亡概率"
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "躲进小巷",
+          "action": "hide",
+          "nextEvent": "event-006",
+          "deathChance": 0.1,
+          "deathReason": "小巷中有潜伏的变异体",
+          "rewards": ["避开感染者群，保存体力"],
+          "npcReaction": {
+            "npc-001": "明智的选择。",
+            "npc-002": "我们要小心小巷里也有危险。",
+            "npc-003": "这路可真窄..."
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "进入便利店",
+          "action": "enter",
+          "nextEvent": "event-007",
+          "deathChance": 0.25,
+          "deathReason": "便利店内有感染者，被发现后无法逃脱",
+          "rewards": ["获得食物x5，水x5，电池x3"],
+          "npcReaction": {
+            "npc-001": "冒险，但可能找到补给。",
+            "npc-002": "我们需要食物和水。",
+            "npc-003": "看看有没有啤酒！"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-003",
+      "scene": {
+        "id": "scene-003",
+        "title": "地铁隧道",
+        "description": "你们发现一条废弃的地铁隧道，据说可以通往港口。隧道中一片漆黑，远处传来奇怪的声音。地面上有明显的拖拽痕迹，似乎有什么东西经过。",
+        "image": "assets/images/scenario-20250310/scene-003.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：进入高危区域"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "点亮照明前进",
+          "action": "light",
+          "nextEvent": "event-008",
+          "deathChance": 0.3,
+          "deathReason": "光源吸引变异体，遭到围攻",
+          "rewards": ["看清路径，避免陷阱"],
+          "npcReaction": {
+            "npc-001": "光线会暴露我们，但要小心。",
+            "npc-002": "我有点害怕...",
+            "npc-003": "老子什么没见过，走！"
+          },
+          "skillBonus": {
+            "洞察力": "提前发现变异体，降低死亡概率20%"
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "在黑暗中摸索前进",
+          "action": "dark",
+          "nextEvent": "event-009",
+          "deathChance": 0.2,
+          "deathReason": "黑暗中踩中陷阱或被潜伏者攻击",
+          "rewards": ["避免被光线吸引，更安全"],
+          "npcReaction": {
+            "npc-001": "太冒险了，但可能更安全。",
+            "npc-002": "我会紧跟着你们。",
+            "npc-003": "黑漆漆的...希望别踩到什么。"
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "放弃隧道，寻找其他路径",
+          "action": "retreat",
+          "nextEvent": "event-002",
+          "deathChance": 0.05,
+          "deathReason": "返回途中遭遇感染者",
+          "rewards": ["避免隧道中的未知危险"],
+          "npcReaction": {
+            "npc-001": "明智的选择。",
+            "npc-002": "那条隧道感觉不对劲。",
+            "npc-003": "老子也觉得那地方邪门。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-004",
+      "scene": {
+        "id": "scene-004",
+        "title": "医院突围",
+        "description": "根据田中上尉的计划，你们决定先去医院寻找医疗补给和可能的解药信息。医院已被感染者占领，大厅里到处是尸体，空气中充满血腥味。电梯不可用，只能走楼梯。",
+        "image": "assets/images/scenario-20250310/scene-004.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：进入医院高危区域"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "直奔药房",
+          "action": "rush",
+          "nextEvent": "event-010",
+          "deathChance": 0.35,
+          "deathReason": "楼层中有大量感染者，快速移动被发现",
+          "rewards": ["获得大量医疗物资"],
+          "npcReaction": {
+            "npc-001": "快速行动，别停留！",
+            "npc-002": "药房在第8层，我们快点！",
+            "npc-003": "冲啊！"
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "逐层清理",
+          "action": "clear",
+          "nextEvent": "event-011",
+          "deathChance": 0.45,
+          "deathReason": "感染者数量过多，战斗中被包围",
+          "rewards": ["清除医院威胁，安全获取补给"],
+          "npcReaction": {
+            "npc-001": "这样更安全，但耗时太长。",
+            "npc-002": "太危险了...",
+            "npc-003": "老子喜欢正面硬刚！"
+          },
+          "skillBonus": {
+            "战术分析": "制定最优清楼策略，死亡概率-20%"
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "寻找医院后门",
+          "action": "search",
+          "nextEvent": "event-012",
+          "deathChance": 0.15,
+          "deathReason": "后门被感染者占领，被发现",
+          "rewards": ["找到秘密入口，避开大厅感染者"],
+          "npcReaction": {
+            "npc-001": "聪明的做法。",
+            "npc-002": "我记得后门有个员工通道。",
+            "npc-003": "希望能通向药房！"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-005",
+      "scene": {
+        "id": "scene-005",
+        "title": "战斗之后",
+        "description": "激烈的战斗后，感染者群被消灭，但你们都受了伤。美咲正在为田中上尉包扎，老杰克靠在墙上喘息。不远处传来更多嘶吼声，看来战斗声音吸引了更多的感染者。",
+        "image": "assets/images/scenario-20250310/scene-005.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：战斗消耗了宝贵时间"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "立即撤离",
+          "action": "flee",
+          "nextEvent": "event-006",
+          "deathChance": 0.2,
+          "deathReason": "撤退途中被追上",
+          "rewards": ["保存体力，避免更多战斗"],
+          "npcReaction": {
+            "npc-001": "我们走！别回头！",
+            "npc-002": "大家都还好吗？",
+            "npc-003": "该死，老子有点累..."
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "留下寻找幸存者",
+          "action": "rescue",
+          "nextEvent": "event-013",
+          "deathChance": 0.5,
+          "deathReason": "感染者包围，无法逃脱",
+          "rewards": ["拯救2名幸存者，获得【领导力】经验+20"],
+          "npcReaction": {
+            "npc-001": "太冒险了，但我们不能丢下任何人。",
+            "npc-002": "我听到了求救声！",
+            "npc-003": "英雄时刻到了！"
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "设下陷阱后撤离",
+          "action": "trap",
+          "nextEvent": "event-006",
+          "deathChance": 0.1,
+          "deathReason": "设置陷阱时被发现",
+          "rewards": ["延缓感染者追击，安全撤离"],
+          "npcReaction": {
+            "npc-001": "好主意！",
+            "npc-002": "这样可以争取时间。",
+            "npc-003": "让它们尝尝老子的陷阱！"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-006",
+      "scene": {
+        "id": "scene-006",
+        "title": "港口突袭",
+        "description": "你们终于看到了横滨港口，远处有一艘救援船正在等待。但码头被大批感染者占领，至少有上百只。救援船还有30分钟就要离开，你们必须在感染者群中杀出一条血路。",
+        "image": "assets/images/scenario-20250310/scene-006.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：最后30分钟，救援船即将离开"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "正面强攻",
+          "action": "assault",
+          "nextEvent": "event-014",
+          "deathChance": 0.6,
+          "deathReason": "感染者数量太多，被淹没",
+          "rewards": ["快速突破，可能全队存活"],
+          "npcReaction": {
+            "npc-001": "这是最后的战斗！全队突击！",
+            "npc-002": "大家加油！我们快到了！",
+            "npc-003": "为了活下去！冲啊！"
+          },
+          "skillBonus": {
+            "射击精通": "命中率+40%",
+            "领导力": "队友士气+30%，战斗力提升"
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "寻找船只绕行",
+          "action": "boat",
+          "nextEvent": "event-015",
+          "deathChance": 0.25,
+          "deathReason": "船只被感染者掀翻",
+          "rewards": ["避开感染者，从海上接近码头"],
+          "npcReaction": {
+            "npc-001": "这附近应该有小船。",
+            "npc-002": "海上有感染者怎么办？",
+            "npc-003": "老子会开船！"
+          }
+        },
+        {
+          "id": "opt-003",
+          "text": "制造噪音吸引感染者",
+          "action": "distract",
+          "nextEvent": "event-016",
+          "deathChance": 0.3,
+          "deathReason": "噪音吸引所有感染者，自己也被困住",
+          "rewards": ["感染者被吸引，其他队友可以安全撤离"],
+          "npcReaction": {
+            "npc-001": "这是个牺牲的计划...",
+            "npc-002": "别！一定有其他办法！",
+            "npc-003": "我来！你们快走！"
+          }
+        }
+      ]
+    },
+    {
+      "id": "event-007",
+      "scene": {
+        "id": "scene-007",
+        "title": "隐藏发现",
+        "description": "在便利店的后方，你们发现了一个隐藏的地下室入口。地下室内有各种实验设备和文件，这里似乎是一个秘密的研究站点。美咲发现了一份重要文件，上面记录着T病毒解药的研究数据。",
+        "image": "assets/images/scenario-20250310/scene-007.jpg",
+        "music": "assets/audio/scenario-20250310/bgm.mp3",
+        "systemMessage": "系统提示：发现隐藏内容 - 解药配方"
+      },
+      "npcsPresent": ["npc-001", "npc-002", "npc-003"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "带走解药数据",
+          "action": "take",
+          "nextEvent": "event-002",
+          "deathChance": 0.1,
+          "deathReason": "带数据时被发现",
+          "rewards": ["获得解药配方数据，完成隐藏支线"],
+          "npcReaction": {
+            "npc-001": "这可能拯救人类！",
+            "npc-002": "太好了！",
+            "npc-003": "老子觉得这东西很危险..."
+          }
+        },
+        {
+          "id": "opt-002",
+          "text": "销毁数据",
+          "action": "destroy",
+          "nextEvent": "event-002",
+          "deathChance": 0.05,
+          "deathReason": null,
+          "rewards": ["防止病毒武器化"],
+          "npcReaction": {
+            "npc-001": "这数据太危险了。",
+            "npc-002": "但是...这也可能是解药啊...",
+            "npc-003": "销毁它吧，人类不配拥有这种力量。"
+          }
+        }
+      ]
+    }
+  ],
+  "endings": [
+    {
+      "id": "ending-001",
+      "type": "good",
+      "title": "英雄幸存",
+      "description": "你成功带领队友抵达横滨港口，在最后一刻登上救援船。田中上尉赞许地看着你，美咲为你包扎伤口，老杰克递给你一瓶啤酒。船缓缓驶离港口，你们看着燃烧的东京，心中充满复杂的情感。你们活下来了，并且带回了重要信息。这座城市或许已经沦陷，但人类的希望还在。",
+      "unlockSkill": "生存术",
+      "unlockItem": "幸存者徽章",
+      "conditions": ["抵达横滨港口", "至少存活2名队友"]
+    },
+    {
+      "id": "ending-002",
+      "type": "bad",
+      "title": "英雄牺牲",
+      "description": "在最后的战斗中，你为了掩护队友撤退，选择独自面对感染者群。田中上尉、美咲和老杰克含泪登船，而你永远留在了码头。你的牺牲为人类争取了宝贵的时间，你的名字将被铭记。你虽然死亡，但你成为了真正的英雄。",
+      "unlockSkill": "勇气",
+      "unlockItem": null,
+      "conditions": ["抵达横滨港口", "玩家死亡", "队友全部存活"]
+    },
+    {
+      "id": "ending-003",
+      "type": "bad",
+      "title": "全军覆没",
+      "description": "感染者数量实在太多了，你们被包围，最终全部倒在了血泊中。救援船在远处鸣笛，却无法靠近。你们为生存而战，但命运没有眷顾你们。这座城市又多了四具尸体，而人类失去了四位英雄。",
+      "unlockSkill": null,
+      "unlockItem": null,
+      "conditions": ["玩家死亡", "队友全部死亡"]
+    },
+    {
+      "id": "ending-004",
+      "type": "hidden",
+      "title": "解药问世",
+      "description": "你不仅成功逃离，还带回了T病毒解药的研究数据。全球的研究团队利用这些数据，在三个月内开发出有效疫苗。你拯救了数百万人的生命，成为了人类对抗病毒的传奇人物。你的名字被刻在英雄纪念碑上，永世铭记。",
+      "unlockSkill": "生化抗性",
+      "unlockItem": "病毒样本",
+      "conditions": ["抵达横滨港口", "完成隐藏支线", "带走解药数据"]
+    }
+  ],
+  "meta": {
+    "version": "1.0",
+    "createdAt": "2025-03-10",
+    "estimatedPlayTime": "20-30分钟",
+    "difficulty": "普通",
+    "tags": ["丧尸", "生存", "团队", "抉择"]
+  }
+}

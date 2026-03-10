@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>无限剧本杀 | 逃离死城</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #e94560;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            color: #888;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .quest-panel {
+            background: rgba(233, 69, 96, 0.1);
+            border-left: 4px solid #e94560;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quest-panel h3 {
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            background: #e94560;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .scene-container {
+            margin-bottom: 20px;
+        }
+
+        .scene-image {
+            width: 100%;
+            height: 300px;
+            background: #2a2a4a;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scene-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .system-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid #00ff00;
+        }
+
+        .scene-description {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .scene-description p {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .npc-panel {
+            margin-bottom: 20px;
+        }
+
+        .npc-panel h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+        }
+
+        .npc-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #e94560;
+        }
+
+        .npc-name {
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+
+        .npc-role {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .choices-container {
+            margin-top: 30px;
+        }
+
+        .choices-container h3 {
+            color: #e94560;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .choice-btn {
+            display: block;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            background: rgba(233, 69, 96, 0.1);
+            border: 2px solid #e94560;
+            border-radius: 8px;
+            color: #e0e0e0;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+
+        .choice-btn:hover {
+            background: #e94560;
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .choice-btn.danger {
+            border-color: #ff4444;
+        }
+
+        .choice-btn.danger:hover {
+            background: #ff4444;
+        }
+
+        .choice-btn.hidden {
+            border-color: #ffd700;
+            opacity: 0.8;
+        }
+
+        .choice-btn.hidden:hover {
+            background: #ffd700;
+            color: #1a1a2e;
+        }
+
+        .player-status {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .status-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+        }
+
+        .status-label {
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        .ending-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .ending-screen h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .ending-screen.ending-good h1 {
+            color: #00ff88;
+        }
+
+        .ending-screen.ending-bad h1 {
+            color: #ff4444;
+        }
+
+        .ending-screen.ending-hidden h1 {
+            color: #ffd700;
+        }
+
+        .ending-description {
+            font-size: 1.2em;
+            margin: 30px 0;
+            line-height: 1.8;
+        }
+
+        .unlocked-skill {
+            background: rgba(233, 69, 96, 0.1);
+            border: 2px solid #e94560;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .restart-btn:hover {
+            background: #ff6b8a;
+            transform: scale(1.05);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 无限剧本杀</h1>
+            <p class="subtitle">Infinite Scenario - 剧本：逃离死城</p>
+        </div>
+
+        <div id="loading" class="loading">加载剧本中</div>
+
+        <div id="game-container" class="game-container" style="display: none;">
+            <div class="main-content">
+                <!-- Quest Info -->
+                <div class="quest-panel">
+                    <h3>🎯 主任务</h3>
+                    <p id="main-quest-text">任务描述</p>
+                    <div style="margin-top: 10px;">
+                        <span class="timer" id="quest-timer">72:00:00</span>
+                    </div>
+                </div>
+
+                <!-- Scene -->
+                <div class="scene-container" id="scene-container">
+                    <div class="scene-image">
+                        <img id="scene-img" src="" alt="场景">
+                        <div class="system-overlay" id="system-overlay"></div>
+                    </div>
+                    <div class="scene-description">
+                        <p id="scene-text"></p>
+                    </div>
+                </div>
+
+                <!-- NPCs -->
+                <div class="npc-panel" id="npc-panel">
+                    <h3>🎭 在场人物</h3>
+                    <div id="npc-list"></div>
+                </div>
+
+                <!-- Choices -->
+                <div class="choices-container">
+                    <h3>➤ 你的选择：</h3>
+                    <div id="choices" class="choices"></div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <div class="player-status">
+                    <h3>📊 玩家状态</h3>
+                    <div class="status-item">
+                        <span class="status-label">❤️ 状态：</span>
+                        <span id="health-status">健康</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">🎒 背包：</span>
+                        <span id="inventory">空</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">🎭 技能：</span>
+                        <span id="current-skills">无</span>
+                    </div>
+                </div>
+
+                <div class="player-status">
+                    <h3>📝 支线任务</h3>
+                    <div id="side-quests"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ending Screen -->
+        <div id="ending-screen" class="ending-screen" style="display: none;">
+            <h1 id="ending-title">结局标题</h1>
+            <div id="ending-type" style="margin: 10px 0; font-weight: bold;"></div>
+            <p class="ending-description" id="ending-description"></p>
+            <div class="unlocked-skill" id="unlocked-skill" style="display: none;">
+                <h3>🎭 解锁新技能</h3>
+                <p id="new-skill" style="font-size: 1.3em; color: #e94560; font-weight: bold;"></p>
+            </div>
+            <button class="restart-btn" onclick="location.reload()">重新开始</button>
+        </div>
+    </div>
+
+    <script src="engine.js"></script>
+    <script>
+        // Initialize game
+        const game = new InfiniteFlowGame();
+
+        // Load scenario
+        fetch('scenarios/scenario-20250310.json')
+            .then(response => response.json())
+            .then(scenario => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('game-container').style.display = 'grid';
+                game.loadScenario(scenario);
+                renderGame();
+            })
+            .catch(error => {
+                document.getElementById('loading').innerHTML = '加载失败：' + error.message;
+                console.error('Error loading scenario:', error);
+            });
+
+        function renderGame() {
+            const currentEvent = game.getCurrentEvent();
+            const scenario = game.currentScenario;
+
+            // Update quest
+            document.getElementById('main-quest-text').textContent = scenario.mainQuest.description;
+
+            // Update scene
+            const scene = currentEvent.scene;
+            document.getElementById('scene-text').textContent = scene.description;
+            document.getElementById('scene-img').src = scene.image || 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300"><rect fill="#2a2a4a" width="800" height="300"/><text x="400" y="150" text-anchor="middle" fill="#888" font-size="20">场景图片生成中...</text></svg>');
+            document.getElementById('system-overlay').textContent = scene.systemMessage || '';
+
+            // Update NPCs
+            const npcList = document.getElementById('npc-list');
+            npcList.innerHTML = '';
+            currentEvent.npcsPresent.forEach(npcId => {
+                const npc = scenario.characters.find(c => c.id === npcId);
+                if (npc) {
+                    const npcEl = document.createElement('div');
+                    npcEl.className = 'npc-item';
+                    npcEl.innerHTML = `
+                        <div class="npc-name">${npc.name}</div>
+                        <div class="npc-role">${npc.role}</div>
+                        <div style="font-size: 0.9em; color: #888;">${npc.personality}</div>
+                    `;
+                    npcList.appendChild(npcEl);
+                }
+            });
+
+            // Update choices
+            const choicesEl = document.getElementById('choices');
+            choicesEl.innerHTML = '';
+            currentEvent.options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+
+                if (option.deathChance > 0.4) {
+                    btn.classList.add('danger');
+                }
+
+                btn.innerHTML = `<strong>${option.text}</strong>`;
+                btn.onclick = () => makeChoice(option);
+                choicesEl.appendChild(btn);
+            });
+
+            // Update player status
+            document.getElementById('health-status').textContent = '健康';
+            document.getElementById('inventory').textContent = game.player.inventory.length > 0 ? game.player.inventory.join(', ') : '空';
+            document.getElementById('current-skills').textContent = game.player.skills.length > 0 ? game.player.skills.join(', ') : '无';
+
+            // Update side quests
+            const sideQuestsEl = document.getElementById('side-quests');
+            sideQuestsEl.innerHTML = '';
+            scenario.sideQuests.forEach(quest => {
+                const questEl = document.createElement('div');
+                questEl.className = 'status-item';
+                questEl.innerHTML = `
+                    <div style="font-weight: bold; color: #e94560;">${quest.title}</div>
+                    <div style="font-size: 0.9em; margin-top: 5px;">${quest.description}</div>
+                    ${quest.hidden ? '<div style="color: #ffd700; font-size: 0.8em; margin-top: 5px;">隐藏任务</div>' : ''}
+                `;
+                sideQuestsEl.appendChild(questEl);
+            });
+        }
+
+        function makeChoice(option) {
+            const result = game.makeChoice(option.id);
+
+            if (result.type === 'death') {
+                showEnding(result.ending);
+            } else {
+                const ending = game.checkEnding();
+                if (ending) {
+                    showEnding(ending);
+                } else {
+                    renderGame();
+                }
+            }
+        }
+
+        function showEnding(ending) {
+            document.getElementById('game-container').style.display = 'none';
+            const endingScreen = document.getElementById('ending-screen');
+            endingScreen.style.display = 'block';
+            endingScreen.className = 'ending-screen ending-' + ending.type;
+
+            document.getElementById('ending-title').textContent = ending.title;
+            document.getElementById('ending-type').textContent = ending.type === 'good' ? '🌟 好结局' : ending.type === 'bad' ? '💀 坏结局' : '✨ 隐藏结局';
+            document.getElementById('ending-description').textContent = ending.description;
+
+            if (ending.unlockSkill) {
+                document.getElementById('unlocked-skill').style.display = 'block';
+                document.getElementById('new-skill').textContent = ending.unlockSkill;
+                game.player.skills.push(ending.unlockSkill);
+            } else {
+                document.getElementById('unlocked-skill').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

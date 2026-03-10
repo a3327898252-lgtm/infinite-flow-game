@@ -1,0 +1,138 @@
+{
+  "id": "scenario-XXX",
+  "title": "剧本标题",
+  "type": "剧本类型（丧尸/修仙/科幻/谍战/恐怖/冒险）",
+  "worldview": "世界观设定（1-2句话）",
+  "mainQuest": {
+    "id": "quest-001",
+    "title": "主任务标题",
+    "description": "详细任务描述，包含目标、背景、约束条件",
+    "timeLimit": 72,
+    "conditions": ["获胜条件1", "获胜条件2"]
+  },
+  "sideQuests": [
+    {
+      "id": "side-001",
+      "title": "支线任务标题",
+      "description": "支线任务描述",
+      "reward": "奖励描述（技能/道具/信息）",
+      "hidden": false
+    },
+    {
+      "id": "side-002",
+      "title": "隐藏支线任务",
+      "description": "隐藏任务描述",
+      "hidden": true,
+      "unlockCondition": "解锁条件",
+      "reward": "特殊奖励"
+    }
+  ],
+  "characters": [
+    {
+      "id": "player",
+      "name": "你",
+      "type": "player",
+      "skills": []
+    },
+    {
+      "id": "npc-001",
+      "name": "NPC姓名",
+      "type": "ally",
+      "role": "角色身份（如：特种部队指挥官）",
+      "personality": "性格特征（如：冷静、果断、多疑）",
+      "avatar": "assets/images/scenario-XXX/npc-001.png",
+      "dialogues": ["对话1", "对话2"],
+      "deathLine": "死亡时的遗言"
+    }
+  ],
+  "events": [
+    {
+      "id": "event-001",
+      "scene": {
+        "id": "scene-001",
+        "title": "场景标题",
+        "description": "场景描述（100-200字，要营造氛围）",
+        "image": "assets/images/scenario-XXX/scene-001.jpg",
+        "music": "assets/audio/scenario-XXX/bgm.mp3",
+        "systemMessage": "系统提示（可选，如：存活倒计时：71:59:59）"
+      },
+      "npcsPresent": ["npc-001", "npc-002"],
+      "options": [
+        {
+          "id": "opt-001",
+          "text": "选项1的描述",
+          "action": "动作类型（search/attack/negotiate/run/hide等）",
+          "nextEvent": "event-002",
+          "deathChance": 0.1,
+          "deathReason": "如果死亡，说明原因",
+          "rewards": ["奖励1", "奖励2"],
+          "npcReaction": {
+            "npc-001": "NPC的反应",
+            "npc-002": "NPC的反应"
+          },
+          "skillBonus": {
+            "技能名称": "如果有此技能，额外效果"
+          }
+        }
+      ]
+    }
+  ],
+  "endings": [
+    {
+      "id": "ending-001",
+      "type": "good/bad/hidden",
+      "title": "结局标题",
+      "description": "结局描述（100-200字）",
+      "unlockSkill": "获得的技能名称（null表示无）",
+      "unlockItem": "获得的道具（null表示无）",
+      "conditions": ["达成条件1", "达成条件2"]
+    }
+  ],
+  "meta": {
+    "version": "1.0",
+    "createdAt": "2025-03-10",
+    "estimatedPlayTime": "15-30分钟",
+    "difficulty": "普通/困难/地狱",
+    "tags": ["标签1", "标签2"]
+  }
+}
+
+## 使用说明
+
+### 必填字段
+- id: 唯一标识符，格式为 scenario-YYYYMMDD
+- title: 剧本标题
+- type: 剧本类型
+- worldview: 世界观
+- mainQuest: 主任务（必须包含 title, description, conditions）
+- characters: 至少包含 player 和 2 个 NPC
+- events: 至少 5 个事件，形成完整的剧情分支
+- endings: 至少 3 个结局（1好结局，1坏结局，1隐藏结局）
+
+### 推荐事件结构
+```
+event-001: 初始场景（3个选择）
+├─ event-002: 分支A（3个选择）
+│   ├─ event-004: 子分支A1（3个选择）
+│   └─ event-005: 子分支A2（3个选择）
+├─ event-003: 分支B（3个选择）
+│   └─ event-006: 结局分支
+```
+
+### 死亡概率设置
+- deathChance: 0.0-1.0
+  - 0.0: 绝对安全
+  - 0.1-0.3: 低风险
+  - 0.4-0.6: 中风险
+  - 0.7-0.9: 高风险
+  - 1.0: 必死
+
+### 技能奖励设计
+- 好结局：奖励实用技能（生存术、领导力、洞察力）
+- 坏结局：奖励特殊技能（勇气、牺牲、复仇）
+- 隐藏结局：奖励稀有技能（时间操控、预知、空间跳跃）
+
+### NPC 对话设计
+- 每个至少 3-5 句对话
+- 对话要体现角色性格
+- 不同选择下要有不同反应
