@@ -5,7 +5,7 @@
 
 # 配置
 REPO_URL="https://github.com/a3327898252-lgtm/infinite-flow-game.git"
-TOKEN="${GITHUB_TOKEN:-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}"
+TOKEN="${GITHUB_TOKEN:-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}"
 BRANCH="main"
 
 # 进入项目目录
