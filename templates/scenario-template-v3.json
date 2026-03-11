@@ -1,0 +1,301 @@
+{
+  "$schema": "infinite-flow-scenario-v3",
+  "id": "scenario-template",
+  "title": "剧本模板",
+  "description": "展示v3引擎支持的完整剧本格式",
+  "version": "3.0.0",
+  "author": "OpenClaw AI",
+  
+  "meta": {
+    "difficulty": "normal",
+    "estimatedPlayTime": 30,
+    "tags": ["模板", "示例"],
+    "unlockRequirements": null
+  },
+
+  "initialEventId": "event-001",
+  
+  "initialItems": [
+    { "id": "flashlight", "quantity": 1, "data": { "battery": 100 } },
+    { "id": "medkit", "quantity": 2 }
+  ],
+
+  "npcs": [
+    {
+      "id": "npc-guide",
+      "name": "向导",
+      "role": "引导NPC",
+      "description": "你的向导",
+      "avatar": "assets/images/npc-guide.png",
+      "maxHealth": 100,
+      "initialHealth": 100,
+      "initialMood": "friendly",
+      "initialRelationship": 50,
+      "initialLocation": "event-001",
+      "dialogues": {
+        "friendly": ["你好！", "需要帮忙吗？"],
+        "angry": ["走开！", "别烦我！"]
+      },
+      "tags": ["important", "plot-critical"]
+    }
+  ],
+
+  "achievements": [
+    {
+      "id": "ach-first-step",
+      "name": "第一步",
+      "description": "完成第一个事件",
+      "icon": "assets/achievements/first-step.png",
+      "secret": false
+    },
+    {
+      "id": "ach-secret",
+      "name": "隐藏成就",
+      "description": "???",
+      "icon": "assets/achievements/secret.png",
+      "secret": true
+    }
+  ],
+
+  "events": [
+    {
+      "id": "event-001",
+      "type": "story",
+      "title": "开场",
+      "scene": {
+        "background": "assets/scenes/scene1-bg.jpg",
+        "music": "assets/audio/bgm-ambient.mp3",
+        "soundEffects": ["assets/audio/wind.mp3"]
+      },
+      "text": "这是事件描述文本。你可以使用**Markdown**格式。",
+      "npcsPresent": ["npc-guide"],
+      
+      "conditionalBranches": [
+        {
+          "conditions": [
+            { "type": "flag", "id": "returned_home", "value": true }
+          ],
+          "override": {
+            "text": "你回到了熟悉的地方..."
+          }
+        }
+      ],
+
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "与向导对话",
+          "description": "了解更多信息",
+          "icon": "dialogue",
+          
+          "conditions": [
+            { "type": "npc_alive", "npcId": "npc-guide", "alive": true }
+          ],
+          
+          "requiredItems": [],
+          "requiredSkills": [],
+          
+          "skillBonuses": [
+            {
+              "skillId": "persuasion",
+              "minLevel": 2,
+              "name": "说服",
+              "effect": "获得额外信息",
+              "value": 10
+            }
+          ],
+
+          "setFlags": [
+            { "id": "talked_to_guide", "value": true }
+          ],
+
+          "modifyVariables": [
+            { "id": "guide_trust", "operation": "add", "value": 10 }
+          ],
+
+          "giveItems": [
+            { "id": "map", "quantity": 1 }
+          ],
+
+          "modifyNPCs": [
+            {
+              "id": "npc-guide",
+              "relationshipDelta": 10,
+              "mood": "friendly"
+            }
+          ],
+
+          "giveSkills": [
+            { "id": "local-knowledge", "level": 1 }
+          ],
+
+          "nextEventId": "event-002",
+          
+          "animation": {
+            "type": "fade",
+            "duration": 500
+          }
+        },
+        {
+          "id": "opt-2",
+          "text": "使用手电筒检查",
+          "requiredItems": [
+            { "id": "flashlight", "quantity": 1, "consume": false }
+          ],
+          "setFlags": [
+            { "id": "checked_area", "value": true }
+          ],
+          "nextEventId": "event-secret",
+          "hidden": false
+        },
+        {
+          "id": "opt-3",
+          "text": "离开",
+          "nextEventId": "event-end",
+          "style": "danger"
+        }
+      ]
+    },
+
+    {
+      "id": "event-002",
+      "type": "dialogue",
+      "title": "对话",
+      "text": "向导告诉你一些重要信息...",
+      "npcsPresent": ["npc-guide"],
+      "dialogueSequence": [
+        {
+          "speaker": "npc-guide",
+          "text": "前方很危险，你要小心。",
+          "emotion": "concerned"
+        },
+        {
+          "speaker": "player",
+          "text": "我会注意的。",
+          "choices": [
+            { "text": "询问详情", "next": "ask-detail" },
+            { "text": "感谢", "next": "thank" }
+          ]
+        }
+      ],
+      "options": [
+        {
+          "id": "opt-continue",
+          "text": "继续前进",
+          "nextEventId": "event-003"
+        }
+      ]
+    },
+
+    {
+      "id": "event-003",
+      "type": "choice",
+      "title": "抉择",
+      "text": "你面临一个重要的选择...",
+      "options": [
+        {
+          "id": "opt-good",
+          "text": "善良的选择",
+          "modifyVariables": [
+            { "id": "morality", "operation": "add", "value": 10 }
+          ],
+          "nextEventId": "event-good-path"
+        },
+        {
+          "id": "opt-bad",
+          "text": "自私的选择",
+          "modifyVariables": [
+            { "id": "morality", "operation": "subtract", "value": 10 }
+          ],
+          "giveItems": [
+            { "id": "gold", "quantity": 100 }
+          ],
+          "nextEventId": "event-bad-path"
+        }
+      ]
+    },
+
+    {
+      "id": "event-secret",
+      "type": "discovery",
+      "title": "秘密发现",
+      "text": "你发现了隐藏的通道！",
+      "unlockAchievement": "ach-secret",
+      "giveItems": [
+        { "id": "treasure", "quantity": 1 }
+      ],
+      "options": [
+        {
+          "id": "opt-return",
+          "text": "返回",
+          "nextEventId": "event-001"
+        }
+      ]
+    },
+
+    {
+      "id": "event-end",
+      "type": "ending-checkpoint",
+      "title": "结局判定点",
+      "text": "你的冒险即将结束...",
+      "forceEndingCheck": true,
+      "options": []
+    }
+  ],
+
+  "endings": [
+    {
+      "id": "ending-good",
+      "type": "good",
+      "title": "英雄结局",
+      "description": "你完成了伟大的事业...",
+      "conditions": [
+        { "type": "variable", "id": "morality", "operator": "gte", "value": 50 },
+        { "type": "flag", "id": "saved_village", "value": true }
+      ],
+      "achievements": ["ach-hero"],
+      "rewards": [
+        { "type": "skill", "id": "leadership", "level": 3 },
+        { "type": "content", "id": "bonus-scenario-1" }
+      ],
+      "epilogue": {
+        "text": "多年以后，人们仍然传颂着你的故事...",
+        "image": "assets/endings/good-epilogue.jpg"
+      }
+    },
+    {
+      "id": "ending-bad",
+      "type": "bad",
+      "title": "悲剧结局",
+      "description": "一切都失去了...",
+      "conditions": [
+        { "type": "variable", "id": "morality", "operator": "lt", "value": -20 }
+      ],
+      "forceTrigger": false,
+      "epilogue": {
+        "text": "你的选择带来了灾难..."
+      }
+    },
+    {
+      "id": "ending-true",
+      "type": "true",
+      "title": "真结局",
+      "description": "你发现了世界的真相...",
+      "conditions": [
+        { "type": "flag", "id": "found_truth", "value": true },
+        { "type": "flag", "id": "saved_village", "value": true },
+        { "type": "visited", "eventId": "event-secret", "visited": true }
+      ],
+      "secret": true,
+      "epilogue": {
+        "text": "真相大白，但代价是什么呢？"
+      }
+    }
+  ],
+
+  "globalScripts": {
+    "onStart": "console.log('游戏开始');",
+    "onEnding": "console.log('游戏结束');",
+    "onSave": "console.log('游戏保存');"
+  }
+}
