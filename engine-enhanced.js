@@ -712,5 +712,83 @@ class InfiniteFlowGameEnhanced {
     }
 }
 
+    /**
+     * 获取保存数据（用于玩家管理系统的存档）
+     */
+    getSaveData() {
+        return {
+            scenarioId: this.currentScenario ? this.currentScenario.id : null,
+            gameState: {
+                currentEventId: this.gameState.currentEventId,
+                history: this.gameState.history,
+                visitedEvents: Array.from(this.gameState.visitedEvents),
+                playTime: this.gameState.playTime,
+                randomEventsTriggered: Array.from(this.gameState.randomEventsTriggered)
+            },
+            player: {
+                skills: this.player.skills,
+                inventory: this.player.inventory,
+                health: this.player.health,
+                stamina: this.player.stamina,
+                sanity: this.player.sanity,
+                achievements: this.player.achievements,
+                deaths: this.player.deaths
+            },
+            npcs: this.npcs,
+            resources: this.resources,
+            timestamp: Date.now()
+        };
+    }
+
+    /**
+     * 恢复保存数据（用于玩家管理系统的读档）
+     */
+    restoreSaveData(saveData) {
+        if (!saveData) return false;
+
+        try {
+            // 恢复游戏状态
+            if (saveData.gameState) {
+                this.gameState.currentEventId = saveData.gameState.currentEventId;
+                this.gameState.history = saveData.gameState.history || [];
+                this.gameState.visitedEvents = new Set(saveData.gameState.visitedEvents || []);
+                this.gameState.playTime = saveData.gameState.playTime || 0;
+                this.gameState.randomEventsTriggered = new Set(saveData.gameState.randomEventsTriggered || []);
+            }
+
+            // 恢复玩家状态
+            if (saveData.player) {
+                this.player.skills = saveData.player.skills || [];
+                this.player.inventory = saveData.player.inventory || [];
+                this.player.health = saveData.player.health || 100;
+                this.player.stamina = saveData.player.stamina || 100;
+                this.player.sanity = saveData.player.sanity || 100;
+                this.player.achievements = saveData.player.achievements || [];
+                this.player.deaths = saveData.player.deaths || 0;
+            }
+
+            // 恢复 NPC 状态
+            if (saveData.npcs) {
+                this.npcs = saveData.npcs;
+            }
+
+            // 恢复资源
+            if (saveData.resources) {
+                this.resources = saveData.resources;
+            }
+
+            // 设置当前事件
+            if (this.currentScenario && this.gameState.currentEventId) {
+                this.currentEvent = this.currentScenario.events.find(e => e.id === this.gameState.currentEventId);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('恢复存档数据失败:', error);
+            return false;
+        }
+    }
+}
+
 // 导出到全局
 window.InfiniteFlowGameEnhanced = InfiniteFlowGameEnhanced;
