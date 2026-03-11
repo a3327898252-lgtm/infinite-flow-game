@@ -42,8 +42,19 @@ class InfiniteFlowGameEnhanced {
      */
     loadScenario(scenario) {
         this.currentScenario = scenario;
-        this.currentEvent = scenario.events.find(e => e.id === 'event-001');
-        this.gameState.currentEventId = 'event-001';
+        
+        // 兼容两种剧本格式：events 或 scenes
+        const eventList = scenario.events || scenario.scenes || [];
+        if (scenario.scenes && !scenario.events) {
+            // 将 scenes 转换为 events 格式
+            scenario.events = scenario.scenes.map(scene => ({
+                ...scene,
+                options: scene.options || []
+            }));
+        }
+        
+        this.currentEvent = scenario.events.find(e => e.id === 'event-001') || scenario.events[0];
+        this.gameState.currentEventId = this.currentEvent ? this.currentEvent.id : null;
         this.gameState.history = [];
         this.gameState.deaths = [];
         this.gameState.visitedEvents = new Set();
@@ -101,7 +112,9 @@ class InfiniteFlowGameEnhanced {
         if (!this.currentScenario) {
             throw new Error('未加载剧本');
         }
-        return this.currentScenario.events.find(e => e.id === this.gameState.currentEventId);
+        // 兼容两种格式
+        const eventList = this.currentScenario.events || this.currentScenario.scenes || [];
+        return eventList.find(e => e.id === this.gameState.currentEventId) || eventList[0];
     }
 
     /**
@@ -710,7 +723,6 @@ class InfiniteFlowGameEnhanced {
             mood: npc.mood
         }));
     }
-}
 
     /**
      * 获取保存数据（用于玩家管理系统的存档）
@@ -779,7 +791,8 @@ class InfiniteFlowGameEnhanced {
 
             // 设置当前事件
             if (this.currentScenario && this.gameState.currentEventId) {
-                this.currentEvent = this.currentScenario.events.find(e => e.id === this.gameState.currentEventId);
+                const eventList = this.currentScenario.events || this.currentScenario.scenes || [];
+                this.currentEvent = eventList.find(e => e.id === this.gameState.currentEventId);
             }
 
             return true;
